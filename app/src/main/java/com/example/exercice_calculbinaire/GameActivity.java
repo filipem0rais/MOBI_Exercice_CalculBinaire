@@ -18,6 +18,8 @@ public class GameActivity extends AppCompatActivity {
     Random random = new Random();
     int number;
     String numberInBinary;
+    String regex;
+
 
     EditText editDonnee;
     EditText editReponse;
@@ -47,32 +49,48 @@ public class GameActivity extends AppCompatActivity {
     private void suivant(View view) {
         generateQuestion();
         editReponse.setText("");
+        editReponse.setBackgroundColor(Color.WHITE);
     }
 
     public void generateQuestion() {
         number = random.nextInt(255);
         numberInBinary = Integer.toBinaryString(number);
+        while (numberInBinary.length() < 8) {
+            numberInBinary = "0" + numberInBinary;
+        }
 
         if (mode.equals("Binaire -> Décimal")) {
             editDonnee.setText(numberInBinary);
+            regex = "[0-9]+";
+
         } else {
             editDonnee.setText(String.valueOf(number));
+            regex = "[0-1]+";
         }
     }
 
-    private void test( android.view.View view) {
+    private void test(android.view.View view) {
         String reponse = editReponse.getText().toString();
+
         if (mode.equals("Binaire -> Décimal")) {
-            if (reponse.equals(String.valueOf(number))) {
-                editReponse.setBackgroundColor(Color.parseColor("#00FF00"));
+            if (reponse.matches(regex)) {
+                if (reponse.equals(String.valueOf(number))) {
+                    editReponse.setBackgroundColor(Color.parseColor("#00FF00"));
+                } else {
+                    editReponse.setBackgroundColor(Color.parseColor("#FF0000"));
+                }
             } else {
-                editReponse.setBackgroundColor(Color.parseColor("#FF0000"));
+                Toast.makeText(getApplicationContext(), "Erreur dans l'entrée", Toast.LENGTH_SHORT).show();
             }
         } else {
-            if (reponse.equals(numberInBinary)) {
-                editReponse.setBackgroundColor(Color.parseColor("#00FF00"));
+            if (reponse.matches(regex)) {
+                if (reponse.equals(numberInBinary)) {
+                    editReponse.setBackgroundColor(Color.parseColor("#00FF00"));
+                } else {
+                    editReponse.setBackgroundColor(Color.parseColor("#FF0000"));
+                }
             } else {
-                editReponse.setBackgroundColor(Color.parseColor("#FF0000"));
+                Toast.makeText(getApplicationContext(), "Erreur dans l'entrée", Toast.LENGTH_SHORT).show();
             }
         }
     }
